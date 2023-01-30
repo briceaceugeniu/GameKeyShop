@@ -7,7 +7,7 @@ namespace GameKeyShop.Server.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private static List<Product> _products = new List<Product>
+        private static readonly List<Product> Products = new()
         {
             new Product
             {
@@ -39,7 +39,7 @@ namespace GameKeyShop.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            return Ok(_products);
+            return Ok(Products);
         }
     }
 }
