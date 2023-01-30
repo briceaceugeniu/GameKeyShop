@@ -1,6 +1,6 @@
 global using GameKeyShop.Shared.Models;
 global using Microsoft.EntityFrameworkCore;
-using GameKeyShop.Server.Data;
+global using GameKeyShop.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
