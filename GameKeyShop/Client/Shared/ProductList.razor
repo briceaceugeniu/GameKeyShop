@@ -1,13 +1,13 @@
-﻿@inject HttpClient Http
+﻿@inject IProductService Service
 
-@if (_products.Count == 0)
+@if (Service.Products.Count == 0)
 {
-    <p>No products...</p>
+    <p>Loading...</p>
 }
 else
 {
     <div class="product-list">
-        @foreach (var product in _products)
+        @foreach (var product in Service.Products)
         {
             <div class="product-item">
                 <a href="#">
@@ -24,14 +24,8 @@ else
 
 
 @code {
-    private static List<Product> _products = new List<Product>();
-
     protected override async Task OnParametersSetAsync()
     {
-        var result = await Http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product");
-        if (result is {Data: { } })
-        {
-            _products = result.Data;
-        }
+        await Service.GetProductAsync();
     }
 }
