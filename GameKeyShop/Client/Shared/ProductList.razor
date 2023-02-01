@@ -10,9 +10,9 @@ else
         @foreach (var product in Service.Products)
         {
             <div class="product-item">
-                <a href="#">
+                <a href="product/@product.Id">
                     <img src="@product.ImageUrl" alt="@product.Name" />
-                    <h3><a href="#">@product.Name</a></h3>
+                    <h3><a href="product/@product.Id">@product.Name</a></h3>
                 </a>
                 <p>@product.Description</p>
                 <p>Price: € @product.Price</p>
