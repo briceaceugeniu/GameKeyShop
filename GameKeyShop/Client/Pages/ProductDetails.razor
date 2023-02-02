@@ -1,32 +1,42 @@
 ﻿@page "/product/{id:int}"
 @inject IProductService Service
 
-@if (product == null)
+@if (_product == null)
 {
-    <p>Loading...</p>
+    <p>@_message</p>
 }
 else
 {
     <div class="product-overview">
         <div class="product-img">
-            <img src="@product.ImageUrl" alt="@product.Name">
+            <img src="@_product.ImageUrl" alt="@_product.Name">
         </div>
         <div class="product-details">
-            <h3 class="product-title">@product.Name</h3>
-            <p class="product-description">@product.Description</p>
-            <div class="product-price">€ @product.Price</div>
+            <h3 class="product-title">@_product.Name</h3>
+            <p class="product-description">@_product.Description</p>
+            <div class="product-price">€ @_product.Price</div>
         </div>
     </div>
 }
 
 @code {
-    private Product? product = null;
+    private Product? _product = null;
+    private string _message = string.Empty;
 
     [Parameter]
     public int Id { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        product = Service.Products.Find(p => p.Id == Id);
+        _message = "Loading..";
+        var response = await Service.GetProductAsync(Id);
+        if (response is not {Success: true })
+        {
+            _message = response.Message ?? "Product not found!";
+        }
+        else
+        {
+            _product = response.Data;
+        }
     }
 }
