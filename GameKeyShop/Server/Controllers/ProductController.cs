@@ -19,5 +19,12 @@ namespace GameKeyShop.Server.Controllers
             var response = await _service.GetProductsAsync();
             return Ok(response);
         }
+
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProduct(int productId)
+        {
+            var response = await _service.GetProductAsync(productId);
+            return Ok(response);
+        }
     }
 }
