@@ -1,4 +1,5 @@
 ﻿@page "/counter"
+@inject ICategoryService Service
 
 <PageTitle>Counter</PageTitle>
 
@@ -8,11 +9,28 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+@if (Service.Categories.Count == 0)
+{
+    <p>No categories</p>
+}
+else
+{
+    @foreach (var category in Service.Categories)
+    {
+        <p>@category.Name</p>
+    }
+}
+
 @code {
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Service.GetCategoriesAsync();
     }
 }

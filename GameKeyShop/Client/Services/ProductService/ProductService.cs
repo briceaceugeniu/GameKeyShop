@@ -12,7 +12,7 @@ namespace GameKeyShop.Client.Services.ProductService
             _http = http;
         }
 
-        public List<Product> Products { get; set; } = new List<Product>();
+        public List<Product> Products { get; set; } = new();
         public async Task GetProductsAsync()
         {
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product");
