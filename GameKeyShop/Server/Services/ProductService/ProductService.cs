@@ -34,5 +34,22 @@
             }
             return response;
         }
+
+        public async Task<ServiceResponse<List<Product>>> GetProductsByCategory(string stringUrl)
+        {
+            var response = new ServiceResponse<List<Product>>();
+
+            try
+            {
+                var products = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(stringUrl.ToLower())).ToListAsync();
+                response.Data = products;
+            }
+            catch (Exception e)
+            {
+                response.Success= false;
+                response.Message = e.Message;
+            }
+            return response;
+        }
     }
 }
