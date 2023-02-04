@@ -1,13 +1,14 @@
-﻿@inject IProductService Service
+﻿@inject IProductService ProductService
+@implements IDisposable
 
-@if (Service.Products.Count == 0)
+@if (ProductService.Products.Count == 0)
 {
     <p>Loading...</p>
 }
 else
 {
     <div class="product-list">
-        @foreach (var product in Service.Products)
+        @foreach (var product in ProductService.Products)
         {
             <div class="product-item">
                 <a href="product/@product.Id">
@@ -24,8 +25,13 @@ else
 
 
 @code {
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        await Service.GetProductsAsync();
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
     }
 }
