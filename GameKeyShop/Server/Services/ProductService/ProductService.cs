@@ -69,5 +69,28 @@
             }
             return response;
         }
+
+        public async Task<ServiceResponse<List<Product>>> SearchProducts(string searchText)
+        {
+            var response = new ServiceResponse<List<Product>>();
+
+            try
+            {
+                var products = await _context.Products
+                    .Where(p => p.Name.ToLower().Contains(searchText.ToLower())
+                    || 
+                    p.Description.ToLower().Contains(searchText.ToLower()))
+                    .Include (p => p.Variants)
+                    .ToListAsync();
+                response.Data = products;
+
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+            return response;
+        }
     }
 }

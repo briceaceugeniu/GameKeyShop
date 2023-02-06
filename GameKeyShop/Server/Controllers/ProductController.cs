@@ -33,5 +33,12 @@ namespace GameKeyShop.Server.Controllers
             var response = await _service.GetProductsByCategory(categoryUrl);
             return Ok(response);
         }
+
+        [HttpGet("search/{searchText}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> SearchProducts(string searchText)
+        {
+            var response = await _service.SearchProducts(searchText);
+            return Ok(response);
+        }
     }
 }

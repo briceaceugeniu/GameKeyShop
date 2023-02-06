@@ -15,7 +15,7 @@ else
             <h3 class="product-title">@_product.Name</h3>
             <p class="product-description">@_product.Description</p>
 
-            @if (_product.Variants != null && _product.Variants.Count != 0)
+            @if (_product.Variants.Count != 0)
             {
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="platform-select">Platform</label>
@@ -31,7 +31,7 @@ else
             }
             else
             {
-                <p>Product is unavilable for now.</p>
+                <p>Product is unavailable for now.</p>
             }
 
         </div>
@@ -41,7 +41,7 @@ else
 @code {
     private Product? _product = null;
     private string _message = string.Empty;
-    private int currentTypeId = 1;
+    private int _currentTypeId = 1;
     private string _price = string.Empty;
 
     [Parameter]
@@ -51,16 +51,16 @@ else
     {
         _message = "Loading..";
         var response = await Service.GetProductAsync(Id);
-        if (response is not {Success: true })
+        if (response != null && response is not { Success: true })
         {
             _message = response.Message ?? "Product not found!";
         }
         else
         {
             _product = response.Data;
-            if (_product != null && _product.Variants.Count > 0)
+            if (_product is {Variants.Count: > 0 })
             {
-                currentTypeId = _product.Variants[0].PlatformTypeId;
+                _currentTypeId = _product.Variants[0].PlatformTypeId;
                 _price = $"Price: € {_product.Variants[0].Price}";
             }
         }
