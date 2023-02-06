@@ -14,7 +14,26 @@ else
         <div class="product-details">
             <h3 class="product-title">@_product.Name</h3>
             <p class="product-description">@_product.Description</p>
-            <div class="product-price">€ -- @*@_product.Price*@</div>
+
+            @if (_product.Variants != null && _product.Variants.Count != 0)
+            {
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="platform-select">Platform</label>
+                    <select class="form-select" @onchange="@OnPlatformSelectionChanged" id="platform-select">
+                        @foreach (var variant in _product.Variants)
+                        {
+                            <option value="@variant.PlatformType.Id">@variant.PlatformType.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="product-price">@_price</div>
+            }
+            else
+            {
+                <p>Product is unavilable for now.</p>
+            }
+
         </div>
     </div>
 }
@@ -22,6 +41,8 @@ else
 @code {
     private Product? _product = null;
     private string _message = string.Empty;
+    private int currentTypeId = 1;
+    private string _price = string.Empty;
 
     [Parameter]
     public int Id { get; set; }
@@ -37,6 +58,25 @@ else
         else
         {
             _product = response.Data;
+            if (_product != null && _product.Variants.Count > 0)
+            {
+                currentTypeId = _product.Variants[0].PlatformTypeId;
+                _price = $"Price: € {_product.Variants[0].Price}";
+            }
+        }
+    }
+
+    private void OnPlatformSelectionChanged(ChangeEventArgs e)
+    {
+        if (_product == null || e.Value == null)
+        {
+            return;
+        }
+
+        var prodVariant = _product.Variants.FirstOrDefault(v => v.PlatformTypeId.ToString() == e.Value.ToString());
+        if (prodVariant != null)
+        {
+            _price = $"Price: € {prodVariant.Price}";
         }
     }
 }
