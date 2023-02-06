@@ -11,7 +11,7 @@
 
         public async Task<ServiceResponse<List<Product>>> GetProductsAsync()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products.Include(p => p.Variants).ToListAsync();
             var response = new ServiceResponse<List<Product>>()
             {
                 Data = products
@@ -21,8 +21,24 @@
 
         public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
         {
-            var product = await _context.Products.FindAsync(productId);
             var response = new ServiceResponse<Product>();
+            var product = new Product();
+
+            try
+            {
+                product = await _context.Products
+                .Include(p => p.Variants)
+                .ThenInclude(v => v.PlatformType)
+                .FirstOrDefaultAsync(p => p.Id == productId);
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+                return response;
+            }
+            
+
             if (product == null)
             {
                 response.Success = false;
@@ -41,7 +57,9 @@
 
             try
             {
-                var products = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(stringUrl.ToLower())).ToListAsync();
+                var products = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(stringUrl.ToLower()))
+                    .Include(p => p.Variants)
+                    .ToListAsync();
                 response.Data = products;
             }
             catch (Exception e)
