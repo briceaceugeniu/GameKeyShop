@@ -13,6 +13,7 @@ namespace GameKeyShop.Client.Services.ProductService
         }
 
         public event Action ProductsChanged;
+        public string Message { get; set; } = "Loading products...";
         public List<Product> Products { get; set; } = new();
         public async Task GetProductsAsync(string? categoryUrl)
         {
@@ -30,6 +31,21 @@ namespace GameKeyShop.Client.Services.ProductService
         public async Task<ServiceResponse<Product>?> GetProductAsync(int productId)
         {
             return await _http.GetFromJsonAsync<ServiceResponse<Product>>($"api/product/{productId}");
+        }
+
+        public async Task SearchProducts(string searchText)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+            if (result is { Data: { } })
+            {
+                Products = result.Data;
+            }
+
+            if (Products.Count == 0)
+            {
+                Message = "No products found.";
+            }
+            ProductsChanged.Invoke();
         }
     }
 }
