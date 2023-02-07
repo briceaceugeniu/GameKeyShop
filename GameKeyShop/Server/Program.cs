@@ -4,6 +4,7 @@ global using GameKeyShop.Server.Data;
 global using GameKeyShop.Shared.DTO;
 global using GameKeyShop.Server.Services.ProductService;
 global using GameKeyShop.Server.Services.CategoryService;
+global using GameKeyShop.Server.Services.CartService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 
