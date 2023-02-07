@@ -70,19 +70,32 @@
             return response;
         }
 
-        public async Task<ServiceResponse<List<Product>>> SearchProducts(string searchText)
+        public async Task<ServiceResponse<ProductSearhResultDto>> SearchProducts(string searchText, int page)
         {
-            var response = new ServiceResponse<List<Product>>();
+            var pageResults = 3f;
+
+            var response = new ServiceResponse<ProductSearhResultDto>();
 
             try
             {
+                var pageCount = Math.Ceiling((await FindProductBySearchText(searchText)).Count / pageResults);
+
                 var products = await _context.Products
                     .Where(p => p.Name.ToLower().Contains(searchText.ToLower())
-                    || 
+                    ||
                     p.Description.ToLower().Contains(searchText.ToLower()))
-                    .Include (p => p.Variants)
+                    .Include(p => p.Variants)
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
                     .ToListAsync();
-                response.Data = products;
+
+
+                response.Data = new ProductSearhResultDto
+                {
+                    Products = products,
+                    CurrentPage = page,
+                    Pages = (int)pageResults   
+                };
 
             }
             catch (Exception e)
@@ -91,6 +104,16 @@
                 response.Message = e.Message;
             }
             return response;
+        }
+
+        private async Task<List<Product>> FindProductBySearchText(string searchText)
+        {
+            return await _context.Products
+                .Where(p => p.Name.ToLower().Contains(searchText.ToLower())
+                ||
+                p.Description.ToLower().Contains(searchText.ToLower()))
+                .Include(p => p.Variants)
+                .ToListAsync();
         }
 
         public async Task<ServiceResponse<List<Product>>> GetFeaturedProducts()

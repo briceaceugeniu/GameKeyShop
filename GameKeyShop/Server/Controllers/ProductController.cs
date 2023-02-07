@@ -34,10 +34,10 @@ namespace GameKeyShop.Server.Controllers
             return Ok(response);
         }
 
-        [HttpGet("search/{searchText}")]
-        public async Task<ActionResult<ServiceResponse<List<Product>>>> SearchProducts(string searchText)
+        [HttpGet("search/{searchText}/{page}")]
+        public async Task<ActionResult<ServiceResponse<ProductSearhResultDto>>> SearchProducts(string searchText, int page)
         {
-            var response = await _service.SearchProducts(searchText);
+            var response = await _service.SearchProducts(searchText, page);
             return Ok(response);
         }
 

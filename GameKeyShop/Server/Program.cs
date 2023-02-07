@@ -1,6 +1,7 @@
 global using GameKeyShop.Shared.Models;
 global using Microsoft.EntityFrameworkCore;
 global using GameKeyShop.Server.Data;
+global using GameKeyShop.Shared.DTO;
 global using GameKeyShop.Server.Services.ProductService;
 global using GameKeyShop.Server.Services.CategoryService;
 using Microsoft.AspNetCore.ResponseCompression;
