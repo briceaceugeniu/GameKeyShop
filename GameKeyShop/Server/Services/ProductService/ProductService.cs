@@ -72,7 +72,7 @@
 
         public async Task<ServiceResponse<ProductSearhResultDto>> SearchProducts(string searchText, int page)
         {
-            var pageResults = 3f;
+            var pageResults = 2f;
 
             var response = new ServiceResponse<ProductSearhResultDto>();
 

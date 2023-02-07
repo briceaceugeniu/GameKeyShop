@@ -1,4 +1,5 @@
 global using GameKeyShop.Shared.Models;
+global using GameKeyShop.Shared.DTO;
 global using System.Net.Http.Json;
 global using GameKeyShop.Client.Services.ProductService;
 global using GameKeyShop.Client.Services.CategoryService;

@@ -1,5 +1,4 @@
-﻿using GameKeyShop.Shared.Models;
-using static System.Net.WebRequestMethods;
+﻿using static System.Net.WebRequestMethods;
 
 namespace GameKeyShop.Client.Services.ProductService
 {
@@ -15,6 +14,9 @@ namespace GameKeyShop.Client.Services.ProductService
         public event Action ProductsChanged;
         public string Message { get; set; } = "Loading products...";
         public List<Product> Products { get; set; } = new();
+        public int CurrentPage { get; set; } = 1;
+        public int PageCount { get; set; } = 0;
+        public string LastSearchText { get; set; } = string.Empty;
 
         public async Task GetProductsAsync(string? categoryUrl)
         {
@@ -26,6 +28,14 @@ namespace GameKeyShop.Client.Services.ProductService
                 Products = result.Data;
             }
 
+            CurrentPage = 1;
+            PageCount = 0;
+
+            if(Products.Count == 0)
+            {
+                Message = "No products found";
+            }
+
             ProductsChanged.Invoke();
         }
 
@@ -34,12 +44,16 @@ namespace GameKeyShop.Client.Services.ProductService
             return await _http.GetFromJsonAsync<ServiceResponse<Product>>($"api/product/{productId}");
         }
 
-        public async Task SearchProducts(string searchText)
+        public async Task SearchProducts(string searchText, int page)
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+            LastSearchText = searchText;
+
+            var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearhResultDto>>($"api/product/search/{searchText}/{page}");
             if (result is { Data: { } })
             {
-                Products = result.Data;
+                Products = result.Data.Products;
+                CurrentPage = result.Data.CurrentPage;
+                PageCount = result.Data.Pages;
             }
 
             if (Products.Count == 0)
