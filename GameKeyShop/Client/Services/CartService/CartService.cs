@@ -24,7 +24,19 @@ namespace GameKeyShop.Client.Services.CartService
             {
                 cart = new List<CartItem>();
             }
-            cart.Add(cartItem);
+
+            var sameItem = cart.Find(i => i.ProductId == cartItem.ProductId 
+                && i.ProductTypeId == cartItem.ProductTypeId);
+
+            if (sameItem == null)
+            {
+                cart.Add(cartItem);
+            }
+            else
+            {
+                sameItem.Quantity += cartItem.Quantity;
+            }
+
 
             await _localStorage.SetItemAsync("cart", cart);
 
@@ -65,6 +77,22 @@ namespace GameKeyShop.Client.Services.CartService
                 cartItems.Remove(cartItem);
                 await _localStorage.SetItemAsync("cart", cartItems);
                 OnChange.Invoke();
+            }
+        }
+
+        public async Task UpdateQuantity(CartProductResponseDto product)
+        {
+            var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            if (cartItems == null)
+            {
+                return;
+            }
+
+            var cartItem = cartItems.Find(i => i.ProductId == product.ProductId && i.ProductTypeId == product.ProductTypeId);
+            if (cartItem != null)
+            {
+                cartItem.Quantity = product.Quantity;
+                await _localStorage.SetItemAsync("cart", cartItems);
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace GameKeyShop.Client.Services.CartService
+﻿using GameKeyShop.Shared.DTO;
+
+namespace GameKeyShop.Client.Services.CartService
 {
     public interface ICartService
     {
@@ -7,5 +9,6 @@
         Task<List<CartItem>> GetCartItems();
         Task<List<CartProductResponseDto>> GetCartProducts();
         Task RemoveProductFromCart(int productId, int productType);
+        Task UpdateQuantity(CartProductResponseDto product);
     }
 }
