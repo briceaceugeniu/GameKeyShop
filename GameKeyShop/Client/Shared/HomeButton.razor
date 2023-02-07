@@ -1,0 +1,10 @@
+﻿@inject NavigationManager NaviationManager
+
+<button @onclick="GoHome" class="btn btn-outline-primary home-btn">Key Shop</button>
+
+@code {
+    private void GoHome()
+    {
+        NaviationManager.NavigateTo("");
+    }
+}

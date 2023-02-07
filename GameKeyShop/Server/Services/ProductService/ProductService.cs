@@ -92,5 +92,24 @@
             }
             return response;
         }
+
+        public async Task<ServiceResponse<List<Product>>> GetFeaturedProducts()
+        {
+            var response = new ServiceResponse<List<Product>>();
+
+            try
+            {
+                var products = await _context.Products.Where(p => p.Featured)
+                    .Include(p => p.Variants)
+                    .ToListAsync();
+                response.Data = products;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+            return response;
+        }
     }
 }

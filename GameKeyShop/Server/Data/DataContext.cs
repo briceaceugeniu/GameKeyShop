@@ -156,6 +156,7 @@
                                   "Embark on a journey through familiar and new locations as you explore and discover magical beasts, " +
                                   "customize your character and craft potions, master spell casting, upgrade talents and become the wizard you want to be.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/c/u/cupheaddeliciouslast-1640043161876_3__2.jpg",
+                    Featured = true,
                     CategoryId = 5
                 },
                 new Product
@@ -175,6 +176,7 @@
                     Description = "Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between. " +
                                   "In the Lands Between ruled by Queen Marika the Eternal, the Elden Ring, the source of the Erdtree, has been shattered.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/5/d/5de6658946177c5f23698932_24_.jpg",
+                    Featured= true,
                     CategoryId = 1
                 },
                 new Product
@@ -202,6 +204,7 @@
                     Description = "Explore distant lands, fight bigger and more awe-inspiring machines, and encounter astonishing new tribes as you return " +
                                   "to the far-future, post-apocalyptic world of Horizon.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/h/e/header_10_15__1.jpg",
+                    Featured= true,
                     CategoryId = 4
                 },
                 new Product

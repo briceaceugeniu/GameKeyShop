@@ -15,9 +15,10 @@ namespace GameKeyShop.Client.Services.ProductService
         public event Action ProductsChanged;
         public string Message { get; set; } = "Loading products...";
         public List<Product> Products { get; set; } = new();
+
         public async Task GetProductsAsync(string? categoryUrl)
         {
-            var endpointUrl = "api/product" + (categoryUrl != null ? $"/category/{categoryUrl}" : string.Empty);
+            var endpointUrl = "api/product" + (categoryUrl != null ? $"/category/{categoryUrl}" : "/featured");
 
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>(endpointUrl);
             if (result is { Data: { } })
