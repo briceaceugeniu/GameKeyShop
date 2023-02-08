@@ -31,5 +31,16 @@ namespace GameKeyShop.Server.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ServiceResponse<string>>> Login(UserLogin request)
+        {
+            var response = await _service.Login(request.Email, request.Password);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
+        }
     }
 }
