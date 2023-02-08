@@ -13,6 +13,8 @@ namespace GameKeyShop.Server.Services.AuthService
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
+            // TODO: Validate password and email first
+
             if (await UserExist(user.Email))
             {
                 return new ServiceResponse<int> 

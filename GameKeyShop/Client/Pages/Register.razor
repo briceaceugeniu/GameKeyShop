@@ -1,8 +1,23 @@
 ﻿@page "/register"
+@inject IAuthService AuthService
 
 <PageTitle>Registration</PageTitle>
 
 <h3>Registration</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @successMessage
+    </div>
+}
+
 
 <EditForm Model="user" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator />
@@ -43,7 +58,7 @@
     </div>
     <ValidationMessage For="@(() => user.ConfirmPassword)" />
   </div>
-  <button type="submit" class="btn btn-primary mt-3">Submit</button>
+  <button type="submit" class="btn btn-primary mt-3">Register</button>
 </EditForm>
 
 @code {
@@ -53,6 +68,9 @@
     private bool showConfirmationPassword = false;
     private string passwordType = "password";
     private string confirmPasswordType = "password";
+
+    string errorMessage = string.Empty;
+    string successMessage = string.Empty;
 
     private void TogglePasswordVisibility()
     {
@@ -66,8 +84,23 @@
         confirmPasswordType = showConfirmationPassword ? "text" : "password";
     }
 
-    void HandleRegistration()
+    async Task HandleRegistration()
     {
-        Console.WriteLine($"Register with the Eamil: {user.Email}");
+        var result = await AuthService.Register(user);
+
+        if (!result.Success)
+        {
+            errorMessage = result.Message;
+            successMessage = string.Empty;
+
+        }
+        else
+        {
+            successMessage = result.Message;
+            errorMessage = string.Empty;
+            user.Email = string.Empty;
+            user.Password = string.Empty;
+            user.ConfirmPassword = string.Empty;
+        }
     }
 }
