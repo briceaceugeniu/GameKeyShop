@@ -223,5 +223,6 @@
         public DbSet<Category> Categories { get; set; }
         public DbSet<PlatformType> ProductTypes { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
