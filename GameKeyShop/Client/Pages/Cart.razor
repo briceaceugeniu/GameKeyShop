@@ -20,13 +20,13 @@ else
                 </div>
                 <div class="name">
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
-                    <span>@product.ProductType</span><br />
+                    <span>@product.PlatformType</span><br />
                     <input type="number" value="@product.Quantity"
                            @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
                            class="form-control input-quantity"
                            min="1" />
                     <button class="btn-delete" @onclick="@(() =>
-                        RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
+                        RemoveProductFromCart(product.ProductId, product.PlatformTypeId))">
                         Delete
                     </button>
                 </div>
@@ -48,9 +48,9 @@ else
         await LoadCart();
     }
 
-    private async Task RemoveProductFromCart(int prodId, int prodTypeId)
+    private async Task RemoveProductFromCart(int prodId, int platformTypeId)
     {
-        await CartService.RemoveProductFromCart(prodId, prodTypeId);
+        await CartService.RemoveProductFromCart(prodId, platformTypeId);
         await LoadCart();
     }
 

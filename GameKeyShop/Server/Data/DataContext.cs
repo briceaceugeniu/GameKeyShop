@@ -9,6 +9,9 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CartItem>()
+                .HasKey(x => new { x.ProductId, x.PlatformTypeId, x.UserId });
+
             modelBuilder.Entity<ProductVariant>()
                 .HasKey(x => new { x.ProductId, x.PlatformTypeId });
 
@@ -221,8 +224,9 @@
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<PlatformType> ProductTypes { get; set; }
+        public DbSet<PlatformType> PlatformTypes { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

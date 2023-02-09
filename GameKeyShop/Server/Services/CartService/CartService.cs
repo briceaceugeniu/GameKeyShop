@@ -29,7 +29,7 @@
 
                 var productVariant = await _context.ProductVariants
                     .Where(v => v.ProductId == item.ProductId
-                        && v.PlatformTypeId == item.ProductTypeId)
+                        && v.PlatformTypeId == item.PlatformTypeId)
                     .Include(v => v.PlatformType)
                     .FirstOrDefaultAsync();
 
@@ -44,8 +44,8 @@
                     Title = product.Name,
                     ImageUrl = product.ImageUrl,
                     Price = productVariant.Price,
-                    ProductType = productVariant.PlatformType.Name,
-                    ProductTypeId = productVariant.PlatformTypeId,
+                    PlatformType = productVariant.PlatformType.Name,
+                    PlatformTypeId = productVariant.PlatformTypeId,
                     Quantity = item.Quantity
                 };
 

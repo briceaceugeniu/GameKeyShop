@@ -26,7 +26,7 @@ namespace GameKeyShop.Client.Services.CartService
             }
 
             var sameItem = cart.Find(i => i.ProductId == cartItem.ProductId 
-                && i.ProductTypeId == cartItem.ProductTypeId);
+                && i.PlatformTypeId == cartItem.PlatformTypeId);
 
             if (sameItem == null)
             {
@@ -63,7 +63,7 @@ namespace GameKeyShop.Client.Services.CartService
             return cartProducts.Data;
         }
 
-        public async Task RemoveProductFromCart(int productId, int productTypeId)
+        public async Task RemoveProductFromCart(int productId, int platformTypeId)
         {
             var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
             if (cartItems == null)
@@ -71,7 +71,7 @@ namespace GameKeyShop.Client.Services.CartService
                 return;
             }
 
-            var cartItem = cartItems.Find(i => i.ProductId == productId && i.ProductTypeId == productTypeId);
+            var cartItem = cartItems.Find(i => i.ProductId == productId && i.PlatformTypeId == platformTypeId);
             if (cartItem != null)
             {
                 cartItems.Remove(cartItem);
@@ -88,7 +88,7 @@ namespace GameKeyShop.Client.Services.CartService
                 return;
             }
 
-            var cartItem = cartItems.Find(i => i.ProductId == product.ProductId && i.ProductTypeId == product.ProductTypeId);
+            var cartItem = cartItems.Find(i => i.ProductId == product.ProductId && i.PlatformTypeId == product.PlatformTypeId);
             if (cartItem != null)
             {
                 cartItem.Quantity = product.Quantity;

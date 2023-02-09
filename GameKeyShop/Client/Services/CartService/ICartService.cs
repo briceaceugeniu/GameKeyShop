@@ -8,7 +8,7 @@ namespace GameKeyShop.Client.Services.CartService
         Task AddToCart(CartItem cartItem);
         Task<List<CartItem>> GetCartItems();
         Task<List<CartProductResponseDto>> GetCartProducts();
-        Task RemoveProductFromCart(int productId, int productType);
+        Task RemoveProductFromCart(int productId, int platformType);
         Task UpdateQuantity(CartProductResponseDto product);
     }
 }
