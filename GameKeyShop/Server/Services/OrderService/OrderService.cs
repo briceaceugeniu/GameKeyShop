@@ -42,8 +42,8 @@ namespace GameKeyShop.Server.Services.OrderService
 
             _context.Orders.Add(order);
 
-            //_context.CartItems.RemoveRange(_context.CartItems
-            //    .Where(ci => ci.UserId == userId));
+            _context.CartItems.RemoveRange(_context.CartItems
+                .Where(ci => ci.UserId == GetUserId()));
 
             await _context.SaveChangesAsync();
 
