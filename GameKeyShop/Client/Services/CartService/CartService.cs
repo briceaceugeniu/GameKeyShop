@@ -77,19 +77,26 @@ namespace GameKeyShop.Client.Services.CartService
 
         public async Task RemoveProductFromCart(int productId, int platformTypeId)
         {
-            var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cartItems == null)
+            if (await IsUserAuthenticated())
             {
-                return;
+                await _http.DeleteAsync($"api/cart/{productId}/{platformTypeId}");
             }
+            else
+            {
+                var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cartItems == null)
+                {
+                    return;
+                }
 
-            var cartItem = cartItems.Find(i => i.ProductId == productId && i.PlatformTypeId == platformTypeId);
-            if (cartItem != null)
-            {
-                cartItems.Remove(cartItem);
-                await _localStorage.SetItemAsync("cart", cartItems);
-                await GetCartItemsCount();
+                var cartItem = cartItems.Find(i => i.ProductId == productId && i.PlatformTypeId == platformTypeId);
+                if (cartItem != null)
+                {
+                    cartItems.Remove(cartItem);
+                    await _localStorage.SetItemAsync("cart", cartItems);
+                }
             }
+            await GetCartItemsCount();
         }
 
         public async Task StoreCartItems(bool emptyLocalCart = false)

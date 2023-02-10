@@ -24,6 +24,7 @@ namespace GameKeyShop.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<List<CartProductResponseDto>>> StoreCartItems(List<CartItem> cartItems)
         {
             var result = await _cartService.StoreCartItems(cartItems);
@@ -38,6 +39,7 @@ namespace GameKeyShop.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ServiceResponse<List<CartProductResponseDto>>>> GetDbCartProducts()
         {
             var result = await _cartService.GetDbCartProducts();
@@ -57,6 +59,14 @@ namespace GameKeyShop.Server.Controllers
         public async Task<ActionResult<ServiceResponse<bool>>> UpdateQuantity(CartItem cartItem)
         {
             var result = await _cartService.UpdateQuantity(cartItem);
+            return Ok(result);
+        }
+
+        [HttpDelete("{productId]/{platformTypeId}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceResponse<bool>>> RemoveItemFromCart(int productId, int platformTypeId)
+        {
+            var result = await _cartService.RemoveItemFromCart(productId, platformTypeId);
             return Ok(result);
         }
     }
