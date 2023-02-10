@@ -3,7 +3,7 @@
     public interface IOrderService
     {
         Task<ServiceResponse<bool>> PlaceOrder();
-        //Task<ServiceResponse<List<OrderOverviewResponse>>> GetOrders();
-        //Task<ServiceResponse<OrderDetailsResponse>> GetOrderDetails(int orderId);
+        Task<ServiceResponse<List<OrderOverviewResponseDto>>> GetOrders();
+        Task<ServiceResponse<OrderDetailsResponseDto>> GetOrderDetails(int orderId);
     }
 }

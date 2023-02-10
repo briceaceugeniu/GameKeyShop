@@ -34,5 +34,17 @@ namespace GameKeyShop.Client.Services.OrderService
                 _navigationManager.NavigateTo("login");
             }
         }
+
+        public async Task<List<OrderOverviewResponseDto>> GetOrders()
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<OrderOverviewResponseDto>>>("api/order");
+            return result.Data;
+        }
+
+        public async Task<OrderDetailsResponseDto> GetOrderDetails(int orderId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<OrderDetailsResponseDto>>($"api/order/{orderId}");
+            return result.Data;
+        }
     }
 }
