@@ -96,7 +96,6 @@ namespace GameKeyShop.Client.Services.CartService
                     await _localStorage.SetItemAsync("cart", cartItems);
                 }
             }
-            await GetCartItemsCount();
         }
 
         public async Task StoreCartItems(bool emptyLocalCart = false)

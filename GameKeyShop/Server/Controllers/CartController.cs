@@ -62,7 +62,7 @@ namespace GameKeyShop.Server.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{productId]/{platformTypeId}")]
+        [HttpDelete("{productId}/{platformTypeId}")]
         [Authorize]
         public async Task<ActionResult<ServiceResponse<bool>>> RemoveItemFromCart(int productId, int platformTypeId)
         {
