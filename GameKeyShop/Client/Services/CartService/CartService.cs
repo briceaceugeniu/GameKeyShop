@@ -23,33 +23,31 @@ namespace GameKeyShop.Client.Services.CartService
         {
             if (await IsUserAuthenticated())
             {
-                Console.WriteLine("user is auth");
+                await _http.PostAsJsonAsync("api/cart/add", cartItem);
             }
             else
             {
-                Console.WriteLine("user is NOT auth");
+                var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cart == null)
+                {
+                    cart = new List<CartItem>();
+                }
+
+                var sameItem = cart.Find(i => i.ProductId == cartItem.ProductId
+                    && i.PlatformTypeId == cartItem.PlatformTypeId);
+
+                if (sameItem == null)
+                {
+                    cart.Add(cartItem);
+                }
+                else
+                {
+                    sameItem.Quantity += cartItem.Quantity;
+                }
+
+                await _localStorage.SetItemAsync("cart", cart);
             }
-
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cart == null)
-            {
-                cart = new List<CartItem>();
-            }
-
-            var sameItem = cart.Find(i => i.ProductId == cartItem.ProductId
-                && i.PlatformTypeId == cartItem.PlatformTypeId);
-
-            if (sameItem == null)
-            {
-                cart.Add(cartItem);
-            }
-            else
-            {
-                sameItem.Quantity += cartItem.Quantity;
-            }
-
-
-            await _localStorage.SetItemAsync("cart", cart);
+            
             await GetCartItemsCount();
         }
 
@@ -112,17 +110,30 @@ namespace GameKeyShop.Client.Services.CartService
 
         public async Task UpdateQuantity(CartProductResponseDto product)
         {
-            var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cartItems == null)
+            if (await IsUserAuthenticated())
             {
-                return;
+                var request = new CartItem
+                {
+                    ProductId = product.ProductId,
+                    Quantity = product.Quantity,
+                    PlatformTypeId = product.PlatformTypeId
+                };
+                await _http.PutAsJsonAsync("api/cart/update-quantity", request);
             }
-
-            var cartItem = cartItems.Find(i => i.ProductId == product.ProductId && i.PlatformTypeId == product.PlatformTypeId);
-            if (cartItem != null)
+            else
             {
-                cartItem.Quantity = product.Quantity;
-                await _localStorage.SetItemAsync("cart", cartItems);
+                var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cartItems == null)
+                {
+                    return;
+                }
+
+                var cartItem = cartItems.Find(i => i.ProductId == product.ProductId && i.PlatformTypeId == product.PlatformTypeId);
+                if (cartItem != null)
+                {
+                    cartItem.Quantity = product.Quantity;
+                    await _localStorage.SetItemAsync("cart", cartItems);
+                }
             }
         }
 
