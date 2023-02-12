@@ -7,8 +7,19 @@
     background-color: rgba(0,0,0,0.4);
 }
 
+.main-logo {
+    font-family: fantasy;
+    font-size: x-large;
+}
+
 .navbar-brand {
     font-size: 1.1rem;
+}
+
+.category-nav {
+    font-size: large !important;
+    font-family: monospace;
+    font-weight: bold;
 }
 
 .oi {

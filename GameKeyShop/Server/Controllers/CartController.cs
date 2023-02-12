@@ -32,7 +32,6 @@ namespace GameKeyShop.Server.Controllers
         }
 
         [HttpGet("count")]
-        [Authorize]
         public async Task<ActionResult<ServiceResponse<int>>> GetCartItemsCount()
         {
             return await _cartService.GetCartItemsCount();
