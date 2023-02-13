@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace GameKeyShop.Server.Services.CartService
+﻿namespace GameKeyShop.Server.Services.CartService
 {
     public class CartService : ICartService
     {
@@ -57,91 +55,163 @@ namespace GameKeyShop.Server.Services.CartService
             }
 
             return result;
-
         }
 
         public async Task<ServiceResponse<List<CartProductResponseDto>>> StoreCartItems(List<CartItem> cartItems)
         {
-            cartItems.ForEach(cartItem => cartItem.UserId = _authService.GetUserId());
-            _context.CartItems.AddRange(cartItems);
-            await _context.SaveChangesAsync();
+            try
+            {
+                cartItems.ForEach(cartItem => cartItem.UserId = _authService.GetUserId());
+                _context.CartItems.AddRange(cartItems);
+                await _context.SaveChangesAsync();
 
-            return await GetDbCartProducts();
+                return await GetDbCartProducts();
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<List<CartProductResponseDto>>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = $"Could not store cart items. Error: {e.Message}"
+                };
+            }
         }
 
         public async Task<ServiceResponse<int>> GetCartItemsCount()
         {
-            var count = (await _context.CartItems.Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync()).Count;
-            return new ServiceResponse<int> { Data = count };
+            try
+            {
+                var count = (await _context.CartItems.Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync()).Count;
+                return new ServiceResponse<int> { Data = count };
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<int>
+                {
+                    Data = 0,
+                    Success = false,
+                    Message = $"Could not get cart items count. Error: {e.Message}"
+                };
+            }
         }
 
         public async Task<ServiceResponse<List<CartProductResponseDto>>> GetDbCartProducts()
         {
-            return await GetCartProducts(await _context.CartItems
-                .Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync());
+            try
+            {
+                return await GetCartProducts(await _context.CartItems
+                    .Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync());
+
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<List<CartProductResponseDto>>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = $"Could not get cart items from DB. Error: {e.Message}"
+                };
+            }
         }
 
         public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem)
         {
-            cartItem.UserId = _authService.GetUserId();
-
-            var sameItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
-                ci.PlatformTypeId == cartItem.PlatformTypeId && ci.UserId == cartItem.UserId);
-            if (sameItem == null)
+            try
             {
-                _context.CartItems.Add(cartItem);
+                cartItem.UserId = _authService.GetUserId();
+
+                var sameItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
+                                               ci.PlatformTypeId == cartItem.PlatformTypeId && ci.UserId == cartItem.UserId);
+                if (sameItem == null)
+                {
+                    _context.CartItems.Add(cartItem);
+                }
+                else
+                {
+                    sameItem.Quantity += cartItem.Quantity;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return new ServiceResponse<bool> { Data = true };
             }
-            else
+            catch (Exception e)
             {
-                sameItem.Quantity += cartItem.Quantity;
+                return new ServiceResponse<bool>
+                {
+                    Data = false,
+                    Success = false,
+                    Message = $"Could not add item to cart. Error: {e.Message}"
+                };
             }
-
-            await _context.SaveChangesAsync();
-
-            return new ServiceResponse<bool> { Data = true };
         }
 
         public async Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem)
         {
-            var dbCartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
-                ci.PlatformTypeId == cartItem.PlatformTypeId && ci.UserId == _authService.GetUserId());
-            if (dbCartItem == null)
+            try
+            {
+                var dbCartItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
+                                               ci.PlatformTypeId == cartItem.PlatformTypeId && ci.UserId == _authService.GetUserId());
+                if (dbCartItem == null)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Data = false,
+                        Success = false,
+                        Message = "Cart item does not exist."
+                    };
+                }
+
+                dbCartItem.Quantity = cartItem.Quantity;
+                await _context.SaveChangesAsync();
+
+                return new ServiceResponse<bool> { Data = true };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<bool>
                 {
                     Data = false,
                     Success = false,
-                    Message = "Cart item does not exist."
+                    Message = $"Could not update quantity. Error: {e.Message}"
                 };
             }
-
-            dbCartItem.Quantity = cartItem.Quantity;
-            await _context.SaveChangesAsync();
-
-            return new ServiceResponse<bool> { Data = true };
         }
 
         public async Task<ServiceResponse<bool>> RemoveItemFromCart(int productId, int productTypeId)
         {
-            var dbCartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.ProductId == productId &&
-                                           ci.PlatformTypeId == productTypeId && ci.UserId == _authService.GetUserId());
-            if (dbCartItem == null)
+            try
+            {
+                var dbCartItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.ProductId == productId &&
+                                               ci.PlatformTypeId == productTypeId && ci.UserId == _authService.GetUserId());
+                if (dbCartItem == null)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Data = false,
+                        Success = false,
+                        Message = "Cart item does not exist."
+                    };
+                }
+
+                _context.CartItems.Remove(dbCartItem);
+                await _context.SaveChangesAsync();
+
+                return new ServiceResponse<bool> { Data = true };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<bool>
                 {
                     Data = false,
                     Success = false,
-                    Message = "Cart item does not exist."
+                    Message = $"Could not remove item form cart. Error: {e.Message}"
                 };
             }
-
-            _context.CartItems.Remove(dbCartItem);
-            await _context.SaveChangesAsync();
-
-            return new ServiceResponse<bool> { Data = true };
         }
     }
 }

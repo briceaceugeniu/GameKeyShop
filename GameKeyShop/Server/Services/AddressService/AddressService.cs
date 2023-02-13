@@ -13,35 +13,55 @@
 
         public async Task<ServiceResponse<Address>> GetAddress()
         {
-            int userId = _authService.GetUserId();
-            var address = await _context.Addresses
-                .FirstOrDefaultAsync(a => a.UserId == userId);
-            return new ServiceResponse<Address> { Data = address };
+            try
+            {
+                var userId = _authService.GetUserId();
+                var address = await _context.Addresses
+                    .FirstOrDefaultAsync(a => a.UserId == userId);
+                return new ServiceResponse<Address> { Data = address };
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<Address>
+                {
+                    Success = false,
+                    Message = e.Message,
+                };
+            }
         }
 
         public async Task<ServiceResponse<Address>> AddOrUpdateAddress(Address address)
         {
             var response = new ServiceResponse<Address>();
-            var dbAddress = (await GetAddress()).Data;
-            if (dbAddress == null)
-            {
-                address.UserId = _authService.GetUserId();
-                _context.Addresses.Add(address);
-                response.Data = address;
-            }
-            else
-            {
-                dbAddress.FirstName = address.FirstName;
-                dbAddress.LastName = address.LastName;
-                dbAddress.State = address.State;
-                dbAddress.Country = address.Country;
-                dbAddress.City = address.City;
-                dbAddress.Zip = address.Zip;
-                dbAddress.Street = address.Street;
-                response.Data = dbAddress;
-            }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                var dbAddress = (await GetAddress()).Data;
+                if (dbAddress == null)
+                {
+                    address.UserId = _authService.GetUserId();
+                    _context.Addresses.Add(address);
+                    response.Data = address;
+                }
+                else
+                {
+                    dbAddress.FirstName = address.FirstName;
+                    dbAddress.LastName = address.LastName;
+                    dbAddress.State = address.State;
+                    dbAddress.Country = address.Country;
+                    dbAddress.City = address.City;
+                    dbAddress.Zip = address.Zip;
+                    dbAddress.Street = address.Street;
+                    response.Data = dbAddress;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
 
             return response;
         }

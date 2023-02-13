@@ -22,7 +22,7 @@
         public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
         {
             var response = new ServiceResponse<Product>();
-            var product = new Product();
+            Product? product;
 
             try
             {
@@ -57,7 +57,7 @@
 
             try
             {
-                var products = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(stringUrl.ToLower()))
+                var products = await _context.Products.Where(p => p.Category != null && p.Category.Url.ToLower().Equals(stringUrl.ToLower()))
                     .Include(p => p.Variants)
                     .ToListAsync();
                 response.Data = products;
@@ -72,7 +72,7 @@
 
         public async Task<ServiceResponse<ProductSearhResultDto>> SearchProducts(string searchText, int page)
         {
-            var pageResults = 2f;
+            var pageResults = 3f;
 
             var response = new ServiceResponse<ProductSearhResultDto>();
 
@@ -94,7 +94,7 @@
                 {
                     Products = products,
                     CurrentPage = page,
-                    Pages = (int)pageResults   
+                    Pages = (int)pageCount
                 };
 
             }

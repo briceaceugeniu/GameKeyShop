@@ -21,6 +21,7 @@ namespace GameKeyShop.Server.Services.AuthService
         }
 
         public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        
 
         public async Task<ServiceResponse<string>> Login(string email, string password)
         {
@@ -35,7 +36,16 @@ namespace GameKeyShop.Server.Services.AuthService
             }
             else
             {
-                response.Data = CreateToken(user);
+                try
+                {
+                    var token = CreateToken(user);
+                    response.Data = token;
+                }
+                catch (Exception e)
+                {
+                    response.Success = false;
+                    response.Message = e.Message;
+                }
             }
 
             return response;
@@ -119,7 +129,7 @@ namespace GameKeyShop.Server.Services.AuthService
 
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
@@ -127,7 +137,8 @@ namespace GameKeyShop.Server.Services.AuthService
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
-                .GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+                .GetBytes(_configuration.GetSection("AppSettings:Token").Value 
+                          ?? throw new InvalidOperationException("Server Token Error")));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

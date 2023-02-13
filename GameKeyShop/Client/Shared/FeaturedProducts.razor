@@ -1,8 +1,8 @@
 ﻿@inject IProductService ProductService
 @implements IDisposable
 
-<center><h2>Top Products of Today</h2></center>
-@if (ProductService.Products == null || ProductService.Products.Count == 0)
+<div style="text-align: center;" ><h2>Top Games</h2></div>
+@if (ProductService.Products.Count == 0)
 {
     <span>@ProductService.Message</span>
 }
@@ -13,22 +13,23 @@ else
         {
             @if (product.Featured)
             {
-                <div class="featured-product">
-                    <div>
-                        <a href="product/@product.Id">
-                            @if (!string.IsNullOrEmpty(product.ImageUrl))
-                            {
-                                <img src="@product.ImageUrl">
-                            }
-                        </a>
+                <div class="card m-1" style="width: 18rem;">
+                    <a href="product/@product.Id">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img class="card-img-top" src="@product.ImageUrl" alt="Game image cover">
+                        }
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="product/@product.Id">@product.Name</a></h5>
+                        <p class="card-text"></p>
+                        @if (product.Variants.Count > 0)
+                        {
+                            <div class="card-footer price">
+                                € @product.Variants[0].Price
+                            </div>
+                        }
                     </div>
-                    <h4><a href="product/@product.Id">@product.Name</a></h4>
-                    @if (product.Variants != null && product.Variants.Count > 0)
-                    {
-                        <h5 class="price">
-                            € @product.Variants[0].Price
-                        </h5>
-                    }
                 </div>
             }
         }

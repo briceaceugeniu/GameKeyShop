@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace GameKeyShop.Server.Services.CategoryService
+﻿namespace GameKeyShop.Server.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
@@ -49,52 +47,88 @@ namespace GameKeyShop.Server.Services.CategoryService
 
         public async Task<ServiceResponse<List<Category>>> AddCategory(Category category)
         {
-            category.Editing = category.IsNew = false;
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-            return await GetAdminCategories();
+            try
+            {
+                category.Editing = category.IsNew = false;
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+                return await GetAdminCategories();
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<List<Category>>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = $"Could not add category. Error: {e.Message}"
+                };
+            }
         }
 
         public async Task<ServiceResponse<List<Category>>> UpdateCategory(Category category)
         {
-            var dbCategory = await GetCategoryById(category.Id);
-            if (dbCategory == null)
+            try
+            {
+                var dbCategory = await GetCategoryById(category.Id);
+                if (dbCategory == null)
+                {
+                    return new ServiceResponse<List<Category>>
+                    {
+                        Success = false,
+                        Message = "Category not found."
+                    };
+                }
+
+                dbCategory.Name = category.Name;
+                dbCategory.Url = category.Url;
+                dbCategory.Visible = category.Visible;
+
+                await _context.SaveChangesAsync();
+
+                return await GetAdminCategories();
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<List<Category>>
                 {
-                    Success = false,
-                    Message = "Category not found."
+                    Data = null, 
+                    Success = false, 
+                    Message = $"Could not update category. Error: {e.Message}"
                 };
             }
-
-            dbCategory.Name = category.Name;
-            dbCategory.Url = category.Url;
-            dbCategory.Visible = category.Visible;
-
-            await _context.SaveChangesAsync();
-
-            return await GetAdminCategories();
         }
 
         public async Task<ServiceResponse<List<Category>>> DeleteCategory(int id)
         {
-            Category category = await GetCategoryById(id);
-            if (category == null)
+            try
+            {
+                var category = await GetCategoryById(id);
+                if (category == null)
+                {
+                    return new ServiceResponse<List<Category>>
+                    {
+                        Success = false,
+                        Message = "Category not found."
+                    };
+                }
+
+                category.Deleted = true;
+                await _context.SaveChangesAsync();
+
+                return await GetAdminCategories();
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<List<Category>>
                 {
+                    Data = null,
                     Success = false,
-                    Message = "Category not found."
+                    Message = $"Could not delete category. Error: {e.Message}"
                 };
             }
-
-            category.Deleted = true;
-            await _context.SaveChangesAsync();
-
-            return await GetAdminCategories();
         }
 
-        private async Task<Category> GetCategoryById(int id)
+        private async Task<Category?> GetCategoryById(int id)
         {
             return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
