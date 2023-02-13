@@ -1,0 +1,28 @@
+﻿@page "/admin/developers"
+@inject IDeveloperService DeveloperService
+
+<h3>Devs</h3>
+
+@if (DeveloperService.Developers == null || DeveloperService.Developers.Count == 0)
+{
+    <p>No Devs here</p>
+}
+else
+{
+    @foreach (var developer in DeveloperService.Developers)
+    {
+        <p>@developer.Name</p>
+    }
+}
+
+
+
+@code {
+
+    private List<Developer> _developers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DeveloperService.GetDevelopers();
+    }
+}
