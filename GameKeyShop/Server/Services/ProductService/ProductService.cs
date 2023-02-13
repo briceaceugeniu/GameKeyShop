@@ -19,6 +19,7 @@
             return response;
         }
 
+
         public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
         {
             var response = new ServiceResponse<Product>();
@@ -27,6 +28,8 @@
             try
             {
                 product = await _context.Products
+                .Include(p => p.Developer)
+                .Include(p => p.Publisher)
                 .Include(p => p.Variants)
                 .ThenInclude(v => v.PlatformType)
                 .FirstOrDefaultAsync(p => p.Id == productId);

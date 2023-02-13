@@ -25,6 +25,20 @@
                 new PlatformType { Id = 4, Name = "Xbox"}
             );
 
+            modelBuilder.Entity<Developer>().HasData(
+                new Developer { Id = 1, Name = "TestDeveloper1" },
+                new Developer { Id = 2, Name = "TestDeveloper2" },
+                new Developer { Id = 3, Name = "TestDeveloper3" },
+                new Developer { Id = 4, Name = "TestDeveloper4" }
+            );
+
+            modelBuilder.Entity<Publisher>().HasData(
+                new Publisher { Id = 1, Name = "TestPublisher1" },
+                new Publisher { Id = 2, Name = "TestPublisher2" },
+                new Publisher { Id = 3, Name = "TestPublisher3" },
+                new Publisher { Id = 4, Name = "TestPublisher4" }
+            );
+
             modelBuilder.Entity<ProductVariant>().HasData(
                 new ProductVariant
                 {
@@ -152,7 +166,9 @@
                                   "Become the key player in events that shaped human history with Relic Entertainment, " +
                                   "World’s Edge and Xbox Game Studios’ latest release - Age of Empires IV. ",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/s/s/ss_20d475d96c3a3dcb720103ce79e22d41df1aa8e0.1920x1080-min_26_.jpg",
-                    CategoryId = 8
+                    CategoryId = 8,
+                    DeveloperId = 1,
+                    PublisherId = 1
                 },
                 new Product
                 {
@@ -163,7 +179,9 @@
                                   "customize your character and craft potions, master spell casting, upgrade talents and become the wizard you want to be.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/c/u/cupheaddeliciouslast-1640043161876_3__2.jpg",
                     Featured = true,
-                    CategoryId = 5
+                    CategoryId = 5,
+                    DeveloperId = 2,
+                    PublisherId = 3
                 },
                 new Product
                 {
@@ -173,7 +191,9 @@
                                   "both the men’s and women’s FIFA World Cup\u2122 coming to the game later in the the season, the addition of women’s club teams, " +
                                   "cross-play features, and more. Experience unrivaled authenticity with over 19,000 players, 700+ teams, 100 stadiums, and over 30 leagues in FIFA 23.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/a/a/aaaa_5.jpg",
-                    CategoryId = 6
+                    CategoryId = 6,
+                    DeveloperId = 4,
+                    PublisherId = 2
                 },
                 new Product
                 {
@@ -183,7 +203,9 @@
                                   "In the Lands Between ruled by Queen Marika the Eternal, the Elden Ring, the source of the Erdtree, has been shattered.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/5/d/5de6658946177c5f23698932_24_.jpg",
                     Featured= true,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    DeveloperId = 3,
+                    PublisherId = 3
                 },
                 new Product
                 {
@@ -192,7 +214,9 @@
                     Description = "The Settlers combines a fresh take on the popular game-play mechanics of the series with a new spin. " +
                                   "It offers a deep infrastructure and economy game-play, used to create and employ armies, to ultimately defeat opponents.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/s/a/sadasd.jpg",
-                    CategoryId = 8
+                    CategoryId = 8,
+                    DeveloperId = 1,
+                    PublisherId = 4
                 },
                 new Product
                 {
@@ -201,7 +225,9 @@
                     Description = "In Assassin's Creed Unity you will become the ultimate assassin and change the course of history forever." +
                                   "Experience the French Revolution first hand. You'll need to hone your skills and equipment to survive the chaos!",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/h/e/hero_11_.jpg",
-                    CategoryId = 2
+                    CategoryId = 2,
+                    DeveloperId = 2,
+                    PublisherId = 2
                 },
                 new Product
                 {
@@ -211,7 +237,9 @@
                                   "to the far-future, post-apocalyptic world of Horizon.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/h/e/header_10_15__1.jpg",
                     Featured= true,
-                    CategoryId = 4
+                    CategoryId = 4,
+                    DeveloperId = 3,
+                    PublisherId = 3
                 },
                 new Product
                 {
@@ -220,7 +248,9 @@
                     Description = "Experience the emotional storytelling and unforgettable characters in The Last of Us, winner of over 200 Game of the Year awards, " +
                                   "now rebuilt from the ground up for the PlayStation®5 console.",
                     ImageUrl = "https://cdn.cdkeys.com/700x700/media/catalog/product/r/o/roadwarden_5_.jpg",
-                    CategoryId = 7
+                    CategoryId = 7,
+                    DeveloperId = 4,
+                    PublisherId = 2
                 }
             );
         }
@@ -234,5 +264,7 @@
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Developer> Developers { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
     }
 }

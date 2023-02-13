@@ -15,6 +15,10 @@ namespace GameKeyShop.Shared.Models
         public string ImageUrl { get; set; } = string.Empty;
         public Category? Category { get; set; }
         public int CategoryId { get; set; }
+        public Developer? Developer { get; set; }
+        public int DeveloperId { get; set; }
+        public Publisher? Publisher { get; set; }
+        public int PublisherId { get; set; }
         public bool Featured { get; set; } = false;
         public List<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     }
