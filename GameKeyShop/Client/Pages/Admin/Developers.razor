@@ -1,28 +1,81 @@
 ﻿@page "/admin/developers"
 @inject IDeveloperService DeveloperService
+@implements IDisposable
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Devs</h3>
 
-@if (DeveloperService.Developers == null || DeveloperService.Developers.Count == 0)
+@foreach (var developer in DeveloperService.Developers)
 {
-    <p>No Devs here</p>
-}
-else
-{
-    @foreach (var developer in DeveloperService.Developers)
+    @if (developer.Editing)
     {
-        <p>@developer.Name</p>
+        <EditForm Model="editingDeveloper" OnSubmit="UpdateDeveloper">
+            <div class="row">
+                <div class="col">
+                    <InputText @bind-Value="editingDeveloper.Name" class="form-control"></InputText>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="oi oi-cloud-upload"></i>
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col">
+                @developer.Name
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" @onclick="@(() => EditDeveloper(developer))">
+                    <i class="oi oi-pencil"></i>
+                </button>
+            </div>
+        </div>
     }
 }
+<button class="btn btn-primary" @onclick="CreateNewDeveloper">
+    <i class="oi oi-plus"></i> Add new developer
+</button>
 
 
 
 @code {
 
-    private List<Developer> _developers = new();
+    Developer editingDeveloper = null;
 
     protected override async Task OnInitializedAsync()
     {
         await DeveloperService.GetDevelopers();
+        DeveloperService.OnChange += StateHasChanged;
     }
+
+    public void Dispose()
+    {
+        DeveloperService.OnChange -= StateHasChanged;
+    }
+
+    private void EditDeveloper(Developer developer)
+    {
+        developer.Editing = true;
+        editingDeveloper = developer;
+    }
+
+    private void CreateNewDeveloper()
+    {
+        editingDeveloper = DeveloperService.CreateNewDeveloper();
+    }
+
+    private async Task UpdateDeveloper()
+    {
+        if (editingDeveloper.IsNew)
+            await DeveloperService.AddDeveloper(editingDeveloper);
+        else
+            await DeveloperService.UpdateDeveloper(editingDeveloper);
+        editingDeveloper = new Developer();
+
+    }
+
 }

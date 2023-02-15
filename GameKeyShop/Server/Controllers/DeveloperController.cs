@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameKeyShop.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/admin")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class DeveloperController : ControllerBase
     {
         private readonly IDeveloperService _developerService;
@@ -15,10 +16,24 @@ namespace GameKeyShop.Server.Controllers
             _developerService = developerService;
         }
 
-        [HttpGet("admin"), Authorize(Roles = "Admin")]
+        [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<Developer>>>> GetDevelopers()
         {
             var result = await _developerService.GetDevelopers();
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<List<Developer>>>> AddDeveloper(Developer developer)
+        {
+            var result = await _developerService.AddDeveloper(developer);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<List<Developer>>>> UpdateDeveloper(Developer developer)
+        {
+            var result = await _developerService.UpdateDeveloper(developer);
             return Ok(result);
         }
     }
