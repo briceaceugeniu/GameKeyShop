@@ -46,7 +46,8 @@ else
             Total (@cartProducts.Count): € @cartProducts.Sum(product => @product.Price * product.Quantity)
         </div>
     </div>
-    <button @onclick="PlaceOrder" class="btn btn-success float-end mt-3">Place Order</button>
+    @*<button @onclick="PlaceOrder" class="btn btn-success float-end mt-3">Place order</button>*@
+    <a class="btn btn-outline-primary float-end mt-3" href="cart/payment">Go to Payment</a>
 }
 
 @code {

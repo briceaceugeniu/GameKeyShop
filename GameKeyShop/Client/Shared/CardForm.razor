@@ -1,0 +1,92 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+
+<div class="container card-box">
+    <form>
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" 
+                   required @bind="CardNumber" maxlength="19">
+            <div class="invalid-feedback">
+                Please enter a valid card number.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="nameOnCard">Name on Card</label>
+            <input type="text" class="form-control" id="nameOnCard" placeholder="John Doe" 
+                   required @bind="NameOnCard">
+            <div class="invalid-feedback">
+                Please enter the name on the card.
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="expiryDate">Expiry Date</label>
+                <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" 
+                       required @bind="ExpiryDate" maxlength="5">
+                <div class="invalid-feedback">
+                    Please enter a valid expiry date.
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="cvv">CVV</label>
+                <input type="text" class="form-control" id="cvv" placeholder="123" 
+                       required @bind="CVV" maxlength="3">
+                <div class="invalid-feedback">
+                    Please enter a valid CVV.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group m-3">
+            <button type="submit" class="btn btn-secondary" @onclick="ProcessPayment">Check the Card</button>
+        </div>
+    </form>
+</div>
+
+@code {
+    private string cardNumber;
+    private string nameOnCard;
+    private string expiryDate;
+    private string cvv;
+
+    [Required(ErrorMessage = "Please enter a valid card number.")]
+    [RegularExpression("^(\\d{4}[ ]){3}\\d{4}$", ErrorMessage = "Please enter a valid card number.")]
+    public string CardNumber
+    {
+        get => cardNumber;
+        set => cardNumber = value;
+    }
+
+    [Required(ErrorMessage = "Please enter the name on the card.")]
+    public string NameOnCard
+    {
+        get => nameOnCard;
+        set => nameOnCard = value;
+    }
+
+    [Required(ErrorMessage = "Please enter a valid expiry date.")]
+    [RegularExpression("^((0[1-9])|(1[0-2]))\\/\\d{2}$", ErrorMessage = "Please enter a valid expiry date.")]
+    public string ExpiryDate
+    {
+        get => expiryDate;
+        set => expiryDate = value;
+    }
+
+    [Required(ErrorMessage = "Please enter a valid CVV.")]
+    [RegularExpression("^\\d{3}$", ErrorMessage = "Please enter a valid CVV.")]
+    public string CVV
+    {
+        get => cvv;
+        set => cvv = value;
+    }
+
+    private async Task ProcessPayment()
+    {
+        
+    }
+}
+
