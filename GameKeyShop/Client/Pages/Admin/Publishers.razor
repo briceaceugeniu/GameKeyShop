@@ -1,0 +1,116 @@
+﻿@page "/admin/publishers"
+@inject IPublisherService PublisherService
+@attribute [Authorize(Roles = "Admin")]
+@implements IDisposable
+
+<h3>Publishers</h3>
+
+@if (!string.IsNullOrEmpty(errorMsg))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMsg
+    </div>
+}
+
+@foreach (var publisher in PublisherService.Publishers)
+{
+    @if (publisher.Editing)
+    {
+        <EditForm Model="editingPublisher" OnSubmit="UpdatePublisher">
+            <div class="row">
+                <div class="col">
+                    <InputText @bind-Value="editingPublisher.Name" class="form-control"></InputText>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="oi oi-cloud-upload"></i>
+                    </button>
+                    <button class="btn btn-primary" @onclick="CancelEditing">
+                        <i class="oi oi-circle-x"></i>
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col">
+                @publisher.Name
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" @onclick="(() => EditPublisher(publisher))">
+                    <i class="oi oi-pencil"></i>
+                </button>
+                <button class="btn btn-primary" @onclick="(() => DeletePublisher(publisher.Id))">
+                    <i class="oi oi-trash"></i>
+                </button>
+            </div>
+        </div>
+    }
+}
+<button class="btn btn-primary" @onclick="CreateNewPublisher">
+    <i class="oi oi-plus"></i> Add new publisher
+</button>
+
+@code {
+    Publisher? editingPublisher = null;
+    private string errorMsg = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PublisherService.GetPublishers();
+        PublisherService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        PublisherService.OnChange -= StateHasChanged;
+    }
+
+    private void CreateNewPublisher()
+    {
+        editingPublisher = PublisherService.CreateNewPublisher();
+    }
+
+    private void EditPublisher(Publisher publisher)
+    {
+        publisher.Editing = true;
+        editingPublisher = publisher;
+    }
+
+    private async Task UpdatePublisher()
+    {
+        if (editingPublisher == null)
+        {
+            return;
+        }
+
+        if (editingPublisher.IsNew)
+        {
+            await PublisherService.AddPublisher(editingPublisher);
+        }
+        else
+        {
+            await PublisherService.UpdatePublishers(editingPublisher);
+        }
+        editingPublisher = new Publisher();
+    }
+
+    private async Task CancelEditing()
+    {
+        editingPublisher = new Publisher();
+        await PublisherService.GetPublishers();
+    }
+
+    private async Task DeletePublisher(int publisherId)
+    {
+        var result = await PublisherService.DeletePublishers(publisherId);
+
+        if (!result.Success)
+        {
+            errorMsg = result.Message;
+        }
+    }
+
+}

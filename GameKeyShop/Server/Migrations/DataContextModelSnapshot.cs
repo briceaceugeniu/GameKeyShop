@@ -638,19 +638,19 @@ namespace GameKeyShop.Server.Migrations
                     b.HasOne("GameKeyShop.Shared.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GameKeyShop.Shared.Models.Developer", "Developer")
                         .WithMany()
                         .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GameKeyShop.Shared.Models.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -665,13 +665,13 @@ namespace GameKeyShop.Server.Migrations
                     b.HasOne("GameKeyShop.Shared.Models.PlatformType", "PlatformType")
                         .WithMany()
                         .HasForeignKey("PlatformTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GameKeyShop.Shared.Models.Product", "Product")
                         .WithMany("Variants")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("PlatformType");

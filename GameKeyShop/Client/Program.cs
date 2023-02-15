@@ -10,6 +10,7 @@ global using GameKeyShop.Client.Services.OrderService;
 global using GameKeyShop.Client.Services.AddressService;
 global using GameKeyShop.Client.Services.DeveloperService;
 global using GameKeyShop.Client.Services.PlatformTypeService;
+global using GameKeyShop.Client.Services.PublisherService;
 using GameKeyShop.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IDeveloperService, DeveloperService>();
 builder.Services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();

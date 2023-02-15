@@ -146,7 +146,7 @@ namespace GameKeyShop.Server.Migrations
                 column: "DeveloperId",
                 principalTable: "Developers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Products_Publishers_PublisherId",
@@ -154,7 +154,7 @@ namespace GameKeyShop.Server.Migrations
                 column: "PublisherId",
                 principalTable: "Publishers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />

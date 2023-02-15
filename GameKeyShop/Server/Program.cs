@@ -10,6 +10,7 @@ global using GameKeyShop.Server.Services.OrderService;
 global using GameKeyShop.Server.Services.AddressService;
 global using GameKeyShop.Server.Services.DeveloperService;
 global using GameKeyShop.Server.Services.PlatformTypeService;
+global using GameKeyShop.Server.Services.PublisherService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +38,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IDeveloperService, DeveloperService>();
 builder.Services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
