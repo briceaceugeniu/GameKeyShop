@@ -1,20 +1,25 @@
 ﻿@page "/cart/payment"
 @inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
-<div style="text-align: center;">
-    <h3>Billing Information</h3>
-    <div class="container">
-        <AddressForm OnAddressSet="@HandleAddressSet" />
+@if (_userIsAuth)
+{
+    <div style="text-align: center;">
+        <h3>Billing Information</h3>
+        <div class="container">
+            <AddressForm OnAddressSet="@HandleAddressSet" />
+        </div>
     </div>
-</div>
-<hr />
-<hr />
-<div style="text-align: center;" class="mb-3">
-    <h3>Payment Information</h3>
-    <div class="container">
-        <CardForm OnCreditCardSet="@HandleCreditCardSet" />
+    <hr />
+    <hr />
+    <div style="text-align: center;" class="mb-3">
+        <h3>Payment Information</h3>
+        <div class="container">
+            <CardForm OnCreditCardSet="@HandleCreditCardSet" />
+        </div>
     </div>
-</div>
+}
+
 
 @if (!_isAddressSet)
 {
@@ -41,6 +46,19 @@
 @code {
     private bool _isAddressSet = false;
     private bool _isCreditCardSet = false;
+    private bool _userIsAuth = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!(await AuthService.IsUserAuthenticated()))
+        {
+            NavigationManager.NavigateTo("login");
+        }
+        else
+        {
+            _userIsAuth = true;
+        }
+    }
 
     private async Task HandleAddressSet(bool isAddressSet)
     {

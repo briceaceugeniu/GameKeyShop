@@ -4,3 +4,30 @@
     border-radius: 6px;
     box-shadow: 1px 3px 2px;
 }
+.payment-info {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.payment-title {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.payment-details {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.payment-label {
+    color: #666;
+    font-size: 18px;
+}
+
+.payment-value {
+    color: #333;
+    font-size: 18px;
+}

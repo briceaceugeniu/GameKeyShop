@@ -4,6 +4,7 @@
 @inject IAddressService AddressService
 @inject ICreditCardService CreditCardService
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 
 <h2 style="text-align: center;" class="mb-3">Cart Overview</h2>
 
@@ -52,7 +53,7 @@ else
         }
     </div>
 
-    <button @onclick="PlaceOrder" class="btn btn-success float-end mt-3">Place order</button>
+    <button @onclick="PlaceOrder" class="btn btn-success float-end mb-3">Place order</button>
 }
 
 
