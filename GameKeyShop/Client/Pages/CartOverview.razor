@@ -1,0 +1,119 @@
+﻿@page "/cart-overview"
+@inject ICartService CartService
+@inject IOrderService OrderService
+@inject IAddressService AddressService
+@inject ICreditCardService CreditCardService
+@inject NavigationManager NavigationManager
+
+<h2 style="text-align: center;" class="mb-3">Cart Overview</h2>
+
+@if (orderPlaced)
+{
+<div class="alert alert-success" role="alert">
+    Great! Your order have been placed!
+    <br />
+    Please check out your <a href="orders">orders</a> page.    
+</div>
+}
+else
+{
+    <h5>Your Delivery Address</h5>
+    <p>
+        <span>@Address.FirstName @Address.LastName</span><br />
+        <span>@Address.Street</span><br />
+        <span>@Address.City, @Address.State, @Address.Zip</span><br />
+        <span>@Address.Country</span><br />
+    </p>
+    <br />
+    <hr />
+    <br />
+
+    <h5>Your Credit Card (Payment)</h5>
+    <p>
+        <span>Number: @CreditCard.Number</span><br />
+        <span>Owner: @CreditCard.Owner</span><br />
+        <span>Expiration: @CreditCard.ExpirationDate</span><br />
+        <span>CVV: @CreditCard.CVV</span><br />
+    </p>
+    <br />
+    <hr />
+    <br />
+
+    <div style="font-family: monospace;">
+
+        @if (cartProducts != null)
+        {
+            foreach (var prod in cartProducts)
+            {
+                <p>[@prod.Title] @prod.Price x @prod.Quantity = € @(prod.Quantity * prod.Price)</p>
+            }
+
+            <div>Total: € @cartProducts.Sum(product => product.Price * product.Quantity)</div>
+        }
+    </div>
+    
+}
+
+
+<button @onclick="PlaceOrder" class="btn btn-success float-end mt-3">Place order</button>
+
+@code {
+    List<CartProductResponseDto?> cartProducts = null;
+    public Address Address { get; set; } = new();
+    public CreditCard CreditCard { get; set; } = new();
+
+    private bool orderPlaced = false;
+
+    private bool addressOk = false;
+    private bool creditCardOk = false;
+    private bool cartItemsOk = false;
+
+    private int count = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orderPlaced = false;
+        await LoadCart();
+
+        var address = await AddressService.GetAddress();
+        if (address != null)
+        {
+            Address = address;
+            addressOk = true;
+        }
+
+        var creditcard = await CreditCardService.GetCreditCard();
+        if (creditcard != null)
+        {
+            CreditCard = creditcard;
+            creditCardOk = true;
+        }
+
+        if (!addressOk || !creditCardOk || !cartItemsOk)
+        {
+            Console.WriteLine("Something is fishy here.");
+            NavigationManager.NavigateTo("cart");
+        }
+    }
+
+    private async Task LoadCart()
+    {
+        await CartService.GetCartItemsCount();
+        cartProducts = await CartService.GetCartProducts();
+
+        if (cartProducts == null || cartProducts.Count == 0)
+        {
+            NavigationManager.NavigateTo("cart");
+        }
+
+        cartItemsOk = true;
+    }
+
+    private async Task PlaceOrder()
+    {
+        await OrderService.PlaceOrder();
+        await CartService.GetCartItemsCount();
+        orderPlaced = true;
+    }
+
+}

@@ -10,14 +10,6 @@
 {
     <span>@message</span>
 }
-else if (orderPlaced)
-{
-    <div class="alert alert-success" role="alert">
-        Great! Your order have been placed!
-        <br />
-        Please check out your <a href="orders">orders</a> page.    
-    </div>
-}
 else
 {
     <div>
@@ -46,18 +38,15 @@ else
             Total (@cartProducts.Count): € @cartProducts.Sum(product => @product.Price * product.Quantity)
         </div>
     </div>
-    @*<button @onclick="PlaceOrder" class="btn btn-success float-end mt-3">Place order</button>*@
     <a class="btn btn-outline-primary float-end mt-3" style="min-width: 100px" href="cart/payment">Next</a>
 }
 
 @code {
     List<CartProductResponseDto> cartProducts = null;
     private string message = "Loading cart...";
-    private bool orderPlaced = false;
 
     protected override async Task OnInitializedAsync()
     {
-        orderPlaced = false;
         await LoadCart();
     }
 
@@ -87,10 +76,4 @@ else
         await CartService.UpdateQuantity(product);
     }
 
-    private async Task PlaceOrder()
-    {
-        await OrderService.PlaceOrder();
-        await CartService.GetCartItemsCount();
-        orderPlaced = true;
-    }
 }

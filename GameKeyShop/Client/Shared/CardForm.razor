@@ -2,7 +2,7 @@
 
 
 
-<div class="container card-box">
+<div class="container card-box p-4">
     
     @if (creditCard == null)
     {
@@ -65,6 +65,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public EventCallback<bool> OnCreditCardSet { get; set; }
 
     CreditCard creditCard = null;
     bool editCreditCard = false;
@@ -72,12 +74,14 @@
     protected override async Task OnInitializedAsync()
     {
         creditCard = await CreditCardService.GetCreditCard();
+        await OnCreditCardSet.InvokeAsync(creditCard != null);
     }
 
     private async Task SubmitCreditCard()
     {
         editCreditCard = false;
         creditCard = await CreditCardService.AddOrUpdateCreditCard(creditCard);
+        await OnCreditCardSet.InvokeAsync(creditCard != null);
     }
 
     private void InitCreditCard()

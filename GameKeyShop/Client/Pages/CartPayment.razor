@@ -1,20 +1,61 @@
 ﻿@page "/cart/payment"
+@inject NavigationManager NavigationManager
 
 <div style="text-align: center;">
     <h3>Billing Information</h3>
     <div class="container">
-        <AddressForm />
+        <AddressForm OnAddressSet="@HandleAddressSet" />
     </div>
 </div>
 <hr />
 <hr />
-<div style="text-align: center;">
+<div style="text-align: center;" class="mb-3">
     <h3>Payment Information</h3>
     <div class="container">
-        <CardForm />
+        <CardForm OnCreditCardSet="@HandleCreditCardSet" />
     </div>
 </div>
 
-@code {
+@if (!_isAddressSet)
+{
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <div>
+            Please add a delivery address.
+        </div>
+    </div>
+}
+@if (!_isCreditCardSet)
+{
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <div>
+            Please add a Credit Card.
+        </div>
+    </div>
+}
 
+@if (_isAddressSet && _isCreditCardSet)
+{
+    <button class="btn btn-success float-end mt-3" @onclick="GoToOverview">Go to overview</button>
+}
+
+@code {
+    private bool _isAddressSet = false;
+    private bool _isCreditCardSet = false;
+
+    private async Task HandleAddressSet(bool isAddressSet)
+    {
+        Console.WriteLine(isAddressSet ? "address set" : "address not set");
+        _isAddressSet = isAddressSet;
+    }
+
+    private async Task HandleCreditCardSet(bool isCreditCardSet)
+    {
+        Console.WriteLine(isCreditCardSet ? "credit card set" : "credit card not set");
+        _isCreditCardSet = isCreditCardSet;
+    }
+
+    private void GoToOverview()
+    {
+        NavigationManager.NavigateTo("cart-overview");
+    }
 }
