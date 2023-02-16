@@ -13,6 +13,7 @@ namespace GameKeyShop.Shared.DTO
         public string PlatformType { get; set; }
         public string ImageUrl { get; set; }
         public int Quantity { get; set; }
+        public string GameKey { get; set; }
         public decimal TotalPrice { get; set; }
     }
 }

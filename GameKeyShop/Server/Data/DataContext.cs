@@ -16,7 +16,7 @@
                 .HasKey(x => new { x.ProductId, x.PlatformTypeId });
 
             modelBuilder.Entity<OrderItem>()
-                .HasKey(x => new { x.OrderId, x.ProductId, x.PlatformTypeId });
+                .HasKey(x => new { x.OrderId, x.ProductId, x.PlatformTypeId, x.GameKey });
 
             modelBuilder.Entity<PlatformType>().HasData(
                 new PlatformType { Id = 1, Name = "PC"},

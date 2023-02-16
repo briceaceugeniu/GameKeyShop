@@ -50,6 +50,7 @@
                         PlatformType = item.PlatformType.Name,
                         Quantity = item.Quantity,
                         Title = item.Product.Name,
+                        GameKey = item.GameKey,
                         TotalPrice = item.TotalPrice
                     }));
 
@@ -105,6 +106,8 @@
             return response;
         }
 
+
+
         public async Task<ServiceResponse<bool>> PlaceOrder()
         {
             try
@@ -120,13 +123,20 @@
                 products.ForEach(product => totalPrice += product.Price * product.Quantity);
 
                 var orderItems = new List<OrderItem>();
-                products.ForEach(product => orderItems.Add(new OrderItem
+                products.ForEach(product =>
                 {
-                    ProductId = product.ProductId,
-                    PlatformTypeId = product.PlatformTypeId,
-                    Quantity = product.Quantity,
-                    TotalPrice = product.Price * product.Quantity
-                }));
+                    for (int i = 0; i < product.Quantity; i++)
+                    {
+                        orderItems.Add(new OrderItem
+                        {
+                            ProductId = product.ProductId,
+                            PlatformTypeId = product.PlatformTypeId,
+                            Quantity = 1,
+                            GameKey = GenerateGUID(),
+                            TotalPrice = product.Price
+                        });
+                    }
+                });
 
                 var order = new Order
                 {
@@ -155,6 +165,12 @@
                 };
             }
             
+        }
+
+        private string GenerateGUID()
+        {
+            var guid = Guid.NewGuid();
+            return guid.ToString();
         }
     }
 }

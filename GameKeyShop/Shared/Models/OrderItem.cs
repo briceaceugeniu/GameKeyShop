@@ -18,5 +18,6 @@ namespace GameKeyShop.Shared.Models
         public int Quantity { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+        public string GameKey { get; set; } = string.Empty;
     }
 }
