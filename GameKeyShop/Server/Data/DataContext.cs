@@ -272,5 +272,6 @@
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<CreditCard> CreditCards { get; set; }
     }
 }

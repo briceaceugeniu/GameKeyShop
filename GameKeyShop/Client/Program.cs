@@ -11,11 +11,11 @@ global using GameKeyShop.Client.Services.AddressService;
 global using GameKeyShop.Client.Services.DeveloperService;
 global using GameKeyShop.Client.Services.PlatformTypeService;
 global using GameKeyShop.Client.Services.PublisherService;
+global using GameKeyShop.Client.Services.CreditCardService;
 using GameKeyShop.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
-
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -32,6 +32,7 @@ builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IDeveloperService, DeveloperService>();
 builder.Services.AddScoped<IPlatformTypeService, PlatformTypeService>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<ICreditCardService, CreditCardService>();
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();

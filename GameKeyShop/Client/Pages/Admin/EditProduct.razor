@@ -107,7 +107,7 @@ else
         <hr />
         <div class="mb-0">
             <label for="publisher">Publisher</label>
-            <InputSelect id="publisher" @bind-Value="product.PublisherId" class="form-control">
+            <InputSelect id="publisher" @bind-Value="product.PublisherId" class="form-control" >
                 @foreach (var publisher in PublisherService.Publishers)
                 {
                     <option value="@publisher.Id">@publisher.Name</option>
@@ -127,13 +127,13 @@ else
     <hr />
     <button type="submit" class="btn btn-primary float-end mb-5">@btnText</button>
     <ValidationSummary></ValidationSummary>
-</EditForm>
-    @if (!product.IsNew)
-    {
-        <button type="button" class="btn btn-danger float-start" @onclick="DeleteProduct">
-            Delete Product
-        </button>
-    }
+    </EditForm>
+        @if (!product.IsNew)
+        {
+            <button type="button" class="btn btn-danger float-start" @onclick="DeleteProduct">
+                Delete Product
+            </button>
+        }
 }
 
 @code {
