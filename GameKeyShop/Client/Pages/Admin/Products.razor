@@ -22,12 +22,13 @@ else
                 <th>Variant</th>
                 <th>Price</th>
                 <th>Visible</th>
+                <th>Deleted</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <Virtualize Items="ProductService.AdminProducts" Context="product">
-                <tr>
+                <tr class="@(product.Deleted ? "deleted-item" : "")">
                     <td>
                         @if (!string.IsNullOrEmpty(product.ImageUrl))
                         {
@@ -51,11 +52,15 @@ else
                         <br />
                     }
                 </td>
-                <td>@(product.Visible ? "✔️" : "")</td>
+                <td align="center">@(product.Visible ? "✔️" : "")</td>
+                <td align="center">@(product.Deleted ? "✔️" : "")</td>
                 <td>
-                    <button class="btn btn-primary" @onclick="(() => EditProduct(product.Id))">
-                        <i class="oi oi-pencil"></i>
-                    </button>
+                    @if (!product.Deleted)
+                    {
+                        <button class="btn btn-primary" @onclick="(() => EditProduct(product.Id))">
+                            <i class="oi oi-pencil"></i>
+                        </button>
+                    }
                 </td>
             </tr>
         </Virtualize>

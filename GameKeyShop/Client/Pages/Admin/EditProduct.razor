@@ -3,6 +3,8 @@
 @inject IProductService ProductService
 @inject IPlatformTypeService PlatformTypeService
 @inject ICategoryService CategoryService
+@inject IPublisherService PublisherService
+@inject IDeveloperService DeveloperService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -36,28 +38,6 @@ else
             {
                 <img src="@product.ImageUrl" />
             }
-            @*else
-            {
-                foreach (var image in product.Images)
-                {
-                    <MudCard Class="ma-2">
-                        <MudCardContent>
-                            <MudImage Src="@image.Data" />
-                        </MudCardContent>
-                        <MudCardActions Style="justify-content: center;">
-                            <MudButton Variant="Variant.Filled"
-                           Color="Color.Error"
-                           OnClick="@(() => RemoveImage(image.Id))">
-                                Remove
-                            </MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                }
-            }*@
-        </div>
-        <div class="mb-0">
-            <label for="images">Image(s)</label>
-            <InputFile id="images" OnChange="OnFileChange" multiple class="form-control"></InputFile>
         </div>
         <div class="mb-0">
             <label for="description">Description</label>
@@ -78,40 +58,64 @@ else
                     <InputSelect disabled="@variant.Deleted" @bind-Value="variant.PlatformTypeId" class="form-control">
                         @foreach (var productType in PlatformTypeService.PlatformTypes)
                         {
-                    <option value="@productType.Id.ToString()">@productType.Name</option>
+                            <option value="@productType.Id.ToString()">@productType.Name</option>
                         }
-            </InputSelect>
-        </div>
-        <div class="col">
-            <InputNumber @bind-Value="variant.Price" class="form-control" disabled="@variant.Deleted"></InputNumber>
-        </div>
-        <div class="col">
-            <InputNumber @bind-Value="variant.OriginalPrice" class="form-control" disabled="@variant.Deleted"></InputNumber>
-        </div>
-        <div class="col col-visible">
-            <InputCheckbox @bind-Value="variant.Visible" style="transform:scale(1.5,1.5);" disabled="@variant.Deleted"></InputCheckbox>
-        </div>
-        <div class="col">
-                    <button type="button" class="btn btn-primary" disabled="@variant.Deleted" @onclick="@(() => RemoveVariant(variant.PlatformTypeId))">
-                <i class="oi oi-trash"></i>
-            </button>
-        </div>
-    </div>
+                    </InputSelect>
+                </div>
+                <div class="col">
+                    <InputNumber @bind-Value="variant.Price" class="form-control" disabled="@variant.Deleted"></InputNumber>
+                </div>
+                <div class="col">
+                    <InputNumber @bind-Value="variant.OriginalPrice" class="form-control" disabled="@variant.Deleted"></InputNumber>
+                </div>
+                <div class="col col-visible">
+                    <InputCheckbox @bind-Value="variant.Visible" style="transform:scale(1.5,1.5);" disabled="@variant.Deleted"></InputCheckbox>
+                </div>
+                <div class="col">
+                            <button type="button" class="btn btn-primary" disabled="@variant.Deleted" @onclick="@(() => RemoveVariant(variant.PlatformTypeId))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </div>
+            </div>
         }
         <button type="button" class="btn btn-primary" @onclick="AddVariant">
             <i class="oi oi-plus"></i> Add Variant
         </button>
+
         <hr />
         <div class="mb-0">
             <label for="category">Category</label>
             <InputSelect id="category" @bind-Value="product.CategoryId" class="form-control">
                 @foreach (var category in CategoryService.AdminCategories)
                 {
-                <option value="@category.Id">@category.Name</option>
+                    <option value="@category.Id">@category.Name</option>
                 }
-        </InputSelect>
-    </div>
-    <hr />
+            </InputSelect>
+        </div>
+
+        <hr />
+        <div class="mb-0">
+            <label for="developer">Developer</label>
+            <InputSelect id="developer" @bind-Value="product.DeveloperId" class="form-control">
+                @foreach (var developer in DeveloperService.Developers)
+                {
+                    <option value="@developer.Id">@developer.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <hr />
+        <div class="mb-0">
+            <label for="publisher">Publisher</label>
+            <InputSelect id="publisher" @bind-Value="product.PublisherId" class="form-control">
+                @foreach (var publisher in PublisherService.Publishers)
+                {
+                    <option value="@publisher.Id">@publisher.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <hr />
     <div class="form-check">
         <InputCheckbox id="featured" @bind-Value="product.Featured" class="form-check-input"></InputCheckbox>
         <label for="featured" class="form-check-label">Featured</label>
@@ -121,7 +125,7 @@ else
         <label for="visible" class="form-check-label">Visible</label>
     </div>
     <hr />
-    <button type="submit" class="btn btn-primary float-end">@btnText</button>
+    <button type="submit" class="btn btn-primary float-end mb-5">@btnText</button>
     <ValidationSummary></ValidationSummary>
 </EditForm>
     @if (!product.IsNew)
@@ -136,7 +140,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    Product product = new Product();
+    Product? product = new Product();
     bool loading = true;
     string btnText = "";
     string msg = "Loading...";
@@ -145,6 +149,8 @@ else
     {
         await PlatformTypeService.GetPlatformTypes();
         await CategoryService.GetAdminCategories();
+        await PublisherService.GetPublishers();
+        await DeveloperService.GetDevelopers();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -218,26 +224,4 @@ else
             NavigationManager.NavigateTo("admin/products");
         }
     }
-
-    async Task OnFileChange(InputFileChangeEventArgs e)
-    {
-        var format = "image/png";
-        //foreach (var image in e.GetMultipleFiles(int.MaxValue))
-        //{
-        //    var resizedImage = await image.RequestImageFileAsync(format, 200, 200);
-        //    var buffer = new byte[resizedImage.Size];
-        //    await resizedImage.OpenReadStream().ReadAsync(buffer);
-        //    var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
-        //    product.Images.Add(new Image { Data = imageData });
-        //}
-    }
-
-    //void RemoveImage(int id)
-    //{
-    //    var image = product.Images.FirstOrDefault(i => i.Id == id);
-    //    if (image != null)
-    //    {
-    //        product.Images.Remove(image);
-    //    }
-    //}
 }

@@ -26,7 +26,7 @@
         public async Task<ServiceResponse<List<Product>>> GetAdminProductsAsync()
         {
             var products = await _context.Products
-                .Where(p => p.Visible)
+                //.Where(p => p.Visible)
                 .Include(p => p.Variants.Where(v => !v.Deleted))
                 .ThenInclude(v => v.PlatformType)
                 .ToListAsync();
@@ -240,6 +240,7 @@
             }
 
             dbProduct.Deleted = true;
+            dbProduct.Visible = false;
 
             await _context.SaveChangesAsync();
             return new ServiceResponse<bool> { Data = true };

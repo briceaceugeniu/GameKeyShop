@@ -13,7 +13,7 @@ namespace GameKeyShop.Shared.Models
         [JsonIgnore]
         public Product? Product { get; set; }
         public int ProductId { get; set; }
-        public PlatformType PlatformType { get; set; }
+        public PlatformType? PlatformType { get; set; }
         public int PlatformTypeId { get; set; }
         [Column(TypeName ="decimal(18,2)")]
         public decimal Price { get; set; }
