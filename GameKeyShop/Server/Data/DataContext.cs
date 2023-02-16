@@ -253,6 +253,12 @@
                     PublisherId = 2
                 }
             );
+
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(p => p.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
         }
 
         public DbSet<Product> Products { get; set; }

@@ -4,6 +4,7 @@ using GameKeyShop.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameKeyShop.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230215202043_ProductVisibleAndDeleteFlags")]
+    partial class ProductVisibleAndDeleteFlags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -470,17 +473,11 @@ namespace GameKeyShop.Server.Migrations
                     b.Property<int>("PlatformTypeId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
 
                     b.HasKey("ProductId", "PlatformTypeId");
 
@@ -493,82 +490,64 @@ namespace GameKeyShop.Server.Migrations
                         {
                             ProductId = 1,
                             PlatformTypeId = 1,
-                            Deleted = false,
                             OriginalPrice = 18.99m,
-                            Price = 14.99m,
-                            Visible = true
+                            Price = 14.99m
                         },
                         new
                         {
                             ProductId = 2,
                             PlatformTypeId = 4,
-                            Deleted = false,
                             OriginalPrice = 46.99m,
-                            Price = 44.29m,
-                            Visible = true
+                            Price = 44.29m
                         },
                         new
                         {
                             ProductId = 3,
                             PlatformTypeId = 2,
-                            Deleted = false,
                             OriginalPrice = 12.99m,
-                            Price = 11.99m,
-                            Visible = true
+                            Price = 11.99m
                         },
                         new
                         {
                             ProductId = 4,
                             PlatformTypeId = 1,
-                            Deleted = false,
                             OriginalPrice = 33.99m,
-                            Price = 25.99m,
-                            Visible = true
+                            Price = 25.99m
                         },
                         new
                         {
                             ProductId = 5,
                             PlatformTypeId = 3,
-                            Deleted = false,
                             OriginalPrice = 44.99m,
-                            Price = 34.99m,
-                            Visible = true
+                            Price = 34.99m
                         },
                         new
                         {
                             ProductId = 6,
                             PlatformTypeId = 4,
-                            Deleted = false,
                             OriginalPrice = 23.99m,
-                            Price = 21.99m,
-                            Visible = true
+                            Price = 21.99m
                         },
                         new
                         {
                             ProductId = 7,
                             PlatformTypeId = 4,
-                            Deleted = false,
                             OriginalPrice = 56.99m,
-                            Price = 33.99m,
-                            Visible = true
+                            Price = 33.99m
                         },
                         new
                         {
                             ProductId = 7,
                             PlatformTypeId = 1,
-                            Deleted = false,
                             OriginalPrice = 32.99m,
-                            Price = 30.99m,
-                            Visible = true
+                            Price = 30.99m
                         },
                         new
                         {
                             ProductId = 8,
                             PlatformTypeId = 2,
-                            Deleted = false,
                             OriginalPrice = 66.99m,
-                            Price = 65.99m,
-                            Visible = true
+                            Price = 65.99m
                         });
                 });
 

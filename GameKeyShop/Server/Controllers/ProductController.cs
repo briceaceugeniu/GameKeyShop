@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GameKeyShop.Server.Controllers
 {
@@ -17,6 +18,13 @@ namespace GameKeyShop.Server.Controllers
         public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts()
         {
             var response = await _service.GetProductsAsync();
+            return Ok(response);
+        }
+
+        [HttpGet("admin"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetAdminProducts()
+        {
+            var response = await _service.GetAdminProductsAsync();
             return Ok(response);
         }
 
@@ -46,6 +54,27 @@ namespace GameKeyShop.Server.Controllers
         {
             var response = await _service.GetFeaturedProducts();
             return Ok(response);
+        }
+
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Product>>> CreateProduct(Product product)
+        {
+            var result = await _service.CreateProduct(product);
+            return Ok(result);
+        }
+
+        [HttpPut, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Product>>> UpdateProduct(Product product)
+        {
+            var result = await _service.UpdateProduct(product);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<bool>>> DeleteProduct(int id)
+        {
+            var result = await _service.DeleteProduct(id);
+            return Ok(result);
         }
     }
 }
