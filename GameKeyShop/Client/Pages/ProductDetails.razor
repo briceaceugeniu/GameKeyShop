@@ -31,12 +31,23 @@ else
             @if (_product.Variants.Count > 1)
             {
                 <div class="mb-3">
-                    <select class="form-select" @bind="_currentTypeId">
-                        @foreach (var variant in _product.Variants)
-                        {
-                            <option value="@variant.PlatformTypeId">@variant.PlatformType.Name</option>
-                        }
-                    </select>
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="platform">Platform</label>
+                        <select class="form-select" id="platform" @bind="_currentTypeId">
+                            @foreach (var variant in _product.Variants)
+                            {
+                                <option value="@variant.PlatformTypeId">@variant.PlatformType.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Platform</span>
+                    <input type="text" class="form-control" value="@(_product.Variants[0].PlatformType != null ?
+                                                                       _product.Variants[0].PlatformType?.Name : "Unknown")" disabled readonly>
                 </div>
             }
             @if (GetSelectedVariant() != null)
