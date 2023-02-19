@@ -5,102 +5,102 @@
 
 <h3>Registration</h3>
 
-@if (!string.IsNullOrEmpty(errorMessage))
+@if (!string.IsNullOrEmpty(_errorMessage))
 {
     <div class="alert alert-danger" role="alert">
-        @errorMessage
+        @_errorMessage
     </div>
 }
-@if (!string.IsNullOrEmpty(successMessage))
+@if (!string.IsNullOrEmpty(_successMessage))
 {
     <div class="alert alert-success" role="alert">
-        @successMessage
+        @_successMessage
     </div>
 }
 
 
-<EditForm Model="user" OnValidSubmit="HandleRegistration">
+<EditForm Model="_user" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator />
-    <div class="form-group">
+    <div>
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
+      <div>
         <span class="input-group-text">Email</span>
       </div>
-      <InputText id="email" class="form-control" @bind-Value="user.Email" />
+      <InputText id="email" class="form-control" @bind-Value="_user.Email" />
     </div>
-    <ValidationMessage For="@(() => user.Email)" />
+    <ValidationMessage For="@(() => _user.Email)" />
   </div>
-  <div class="form-group">
+  <div>
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
+      <div>
         <span class="input-group-text">Password</span>
       </div>
-      <InputText id="password" type="@passwordType" class="form-control" @bind-Value="user.Password" />
-      <div class="input-group-append">
+      <InputText id="password" type="@_passwordType" class="form-control" @bind-Value="_user.Password" />
+      <div>
         <button type="button" class="btn btn-secondary" @onclick="TogglePasswordVisibility">
           <i class="oi oi-eye"></i>
         </button>
       </div>
     </div>
-    <ValidationMessage For="@(() => user.Password)" />
+    <ValidationMessage For="@(() => _user.Password)" />
   </div>
-  <div class="form-group">
+  <div>
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
+      <div>
         <span class="input-group-text">Confirm Password</span>
       </div>
-      <InputText id="confirmPassword" type="@confirmPasswordType" class="form-control" @bind-Value="user.ConfirmPassword" />
-      <div class="input-group-append">
+      <InputText id="confirmPassword" type="@_confirmPasswordType" class="form-control" @bind-Value="_user.ConfirmPassword" />
+      <div>
         <button type="button" class="btn btn-secondary" @onclick="ToggleConfirmationPasswordVisibility">
           <i class="oi oi-eye"></i>
         </button>
       </div>
     </div>
-    <ValidationMessage For="@(() => user.ConfirmPassword)" />
+    <ValidationMessage For="@(() => _user.ConfirmPassword)" />
   </div>
   <button type="submit" class="btn btn-primary mt-3">Register</button>
 </EditForm>
 
 @code {
-    UserRegister user = new UserRegister();
+    readonly UserRegister _user = new UserRegister();
 
-    private bool showPassword = false;
-    private bool showConfirmationPassword = false;
-    private string passwordType = "password";
-    private string confirmPasswordType = "password";
+    private bool _showPassword;
+    private bool _showConfirmationPassword;
+    private string _passwordType = "password";
+    private string _confirmPasswordType = "password";
 
-    string errorMessage = string.Empty;
-    string successMessage = string.Empty;
+    string _errorMessage = string.Empty;
+    string _successMessage = string.Empty;
 
     private void TogglePasswordVisibility()
     {
-        showPassword = !showPassword;
-        passwordType = showPassword ? "text" : "password";
+        _showPassword = !_showPassword;
+        _passwordType = _showPassword ? "text" : "password";
     }
 
     private void ToggleConfirmationPasswordVisibility()
     {
-        showConfirmationPassword = !showConfirmationPassword;
-        confirmPasswordType = showConfirmationPassword ? "text" : "password";
+        _showConfirmationPassword = !_showConfirmationPassword;
+        _confirmPasswordType = _showConfirmationPassword ? "text" : "password";
     }
 
     async Task HandleRegistration()
     {
-        var result = await AuthService.Register(user);
+        var result = await AuthService.Register(_user);
 
         if (!result.Success)
         {
-            errorMessage = result.Message;
-            successMessage = string.Empty;
+            _errorMessage = result.Message;
+            _successMessage = string.Empty;
 
         }
         else
         {
-            successMessage = result.Message;
-            errorMessage = string.Empty;
-            user.Email = string.Empty;
-            user.Password = string.Empty;
-            user.ConfirmPassword = string.Empty;
+            _successMessage = result.Message;
+            _errorMessage = string.Empty;
+            _user.Email = string.Empty;
+            _user.Password = string.Empty;
+            _user.ConfirmPassword = string.Empty;
         }
     }
 }
