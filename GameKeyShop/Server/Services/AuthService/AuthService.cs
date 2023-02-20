@@ -20,7 +20,7 @@ namespace GameKeyShop.Server.Services.AuthService
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
         
 
         public async Task<ServiceResponse<string>> Login(string email, string password)
@@ -63,7 +63,7 @@ namespace GameKeyShop.Server.Services.AuthService
                 };
             }
 
-            CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+            CreatePasswordHash(newPassword, out var passwordHash, out var passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -86,7 +86,7 @@ namespace GameKeyShop.Server.Services.AuthService
                 };
             }
 
-            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -99,41 +99,32 @@ namespace GameKeyShop.Server.Services.AuthService
 
         public async Task<bool> UserExist(string email)
         {
-
-            if (await _context.Users.AnyAsync(u => u.Email.ToLower().Equals(email.ToLower())))
-            {
-                return true;
-            }
-            return false;
+            return await _context.Users.AnyAsync(u => u.Email.ToLower().Equals(email.ToLower()));
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac
+                .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash =
-                    hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            using var hmac = new HMACSHA512(passwordSalt);
+            var computedHash =
+                hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return computedHash.SequenceEqual(passwordHash);
         }
 
         private string CreateToken(User user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.Email),
+                new(ClaimTypes.Role, user.Role)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
